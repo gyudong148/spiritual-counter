@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>경건한 생활 카운터</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .current-month {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .add-item-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .add-item-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4facfe;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(132, 250, 176, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            color: #333;
+        }
+
+        .items-section {
+            margin-bottom: 30px;
+        }
+
+        .items-section h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .item-card {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s;
+        }
+
+        .item-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .item-name {
+            font-size: 1.4em;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+        }
+
+        .item-count {
+            font-size: 2em;
+            font-weight: 700;
+            color: #4facfe;
+            margin: 0 20px;
+        }
+
+        .item-controls {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .history-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .history-section h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+        }
+
+        .history-item {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-item:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .monthly-archive {
+            background: #e3f2fd;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .monthly-archive h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        .archive-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #1976d2;
+        }
+
+        .month-controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .item-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+            
+            .item-controls {
+                justify-content: center;
+            }
+            
+            .month-controls {
+                text-align: center;
+            }
+            
+            .month-controls button {
+                margin: 5px;
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .archive-item h4 {
+                font-size: 1.1em;
+            }
+            
+            .archive-item > div:first-child {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .archive-item > div:first-child > div {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🙏 경건한 생활 카운터</h1>
+            <div class="current-month" id="currentMonth"></div>
+        </div>
+
+        <div class="main-content">
+            <!-- 새 항목 추가 섹션 -->
+            <div class="add-item-section">
+                <h3>📝 새로운 영적 활동 추가</h3>
+                <div class="input-group">
+                    <input type="text" id="newItemInput" placeholder="예: 묵상, 봉사, 구제, 기타 영적활동 등..." maxlength="50">
+                    <button class="btn btn-primary" onclick="addItem()">추가</button>
+                </div>
+                <small style="color: #666;">💡 팁: 묵상, 봉사, 구제, 예배참석, 기도모임, 찬양대 연습 등의 활동을 추가해보세요.</small>
+            </div>
+
+            <!-- 월 관리 섹션 -->
+            <div class="month-controls">
+                <button class="btn btn-warning" onclick="resetMonth()">📅 새로운 달 시작하기</button>
+                <button class="btn btn-primary" onclick="saveCurrentMonthAsImage()" style="margin-left: 10px;">📸 현재 달 이미지로 저장</button>
+                <small style="display: block; margin-top: 10px; color: #666;">
+                    현재 카운트를 히스토리로 저장하고 새 달을 시작하거나, 현재 상태를 이미지로 저장할 수 있습니다.
+                </small>
+            </div>
+
+            <!-- 현재 활동 목록 -->
+            <div class="items-section">
+                <h3>📊 이번 달 영적 활동</h3>
+                <div id="itemsList"></div>
+            </div>
+
+            <!-- 히스토리 섹션 -->
+            <div class="history-section">
+                <h3>📋 오늘의 영적 활동 기록</h3>
+                <div class="history-list" id="historyList">
+                    <div class="empty-message">아직 기록된 활동이 없습니다.</div>
+                </div>
+            </div>
+
+            <!-- 월별 보관함 -->
+            <div class="monthly-archive" id="monthlyArchive" style="display: none;">
+                <h3>📚 이전 달 기록 보관함</h3>
+                <div id="archiveList"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK & html2canvas for image capture -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <script>
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyATMvJsoUumc21yE-q8IvuEx5OSsQkKp4E",
+            authDomain: "life148-count.firebaseapp.com",
+            projectId: "life148-count",
+            storageBucket: "life148-count.firebasestorage.app",
+            messagingSenderId: "683022005130",
+            appId: "1:683022005130:web:191620c21c59cfe8054e73",
+            measurementId: "G-CCNLEBJLV0"
+        };
+
+        // Firebase 초기화
+        let db = null;
+        let isFirebaseEnabled = false;
+
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            isFirebaseEnabled = true;
+            console.log("Firebase 연결 성공!");
+        } catch (error) {
+            console.log("Firebase 연결 실패, 로컬 저장소를 사용합니다:", error);
+            isFirebaseEnabled = false;
+        }
+
+        // 데이터 저장 객체
+        let spiritualData = {
+            items: [
+                { id: 1, name: '기도', count: 0 },
+                { id: 2, name: '성경읽기', count: 0 },
+                { id: 3, name: '찬양', count: 0 },
+                { id: 4, name: '심방', count: 0 },
+                { id: 5, name: '상담', count: 0 },
+                { id: 6, name: '설교준비', count: 0 },
+                { id: 7, name: '전도집회', count: 0 }
+            ],
+            history: [],
+            monthlyArchive: [],
+            currentMonth: new Date().getMonth() + 1,
+            currentYear: new Date().getFullYear(),
+            nextId: 8,
+            userId: 'pastor_david' // 고유 사용자 ID
+        };
+
+        // 로컬 저장소 함수들
+        function saveToLocalStorage() {
+            if (!isFirebaseEnabled) {
+                localStorage.setItem('spiritualLifeData', JSON.stringify(spiritualData));
+            }
+        }
+
+        function loadFromLocalStorage() {
+            if (!isFirebaseEnabled) {
+                const saved = localStorage.getItem('spiritualLifeData');
+                if (saved) {
+                    const loadedData = JSON.parse(saved);
+                    // 기존 데이터 구조와 병합
+                    Object.assign(spiritualData, loadedData);
+                }
+            }
+        }
+
+        // Firebase 저장 함수
+        async function saveToFirebase() {
+            if (!isFirebaseEnabled) return;
+            
+            try {
+                await db.collection('spiritualLife').doc(spiritualData.userId).set(spiritualData);
+                console.log("데이터가 클라우드에 저장되었습니다.");
+            } catch (error) {
+                console.error("Firebase 저장 오류:", error);
+                alert("클라우드 저장 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            }
+        }
+
+        // Firebase 로드 함수
+        async function loadFromFirebase() {
+            if (!isFirebaseEnabled) return;
+            
+            try {
+                const doc = await db.collection('spiritualLife').doc(spiritualData.userId).get();
+                if (doc.exists) {
+                    const loadedData = doc.data();
+                    Object.assign(spiritualData, loadedData);
+                    console.log("클라우드에서 데이터를 불러왔습니다.");
+                } else {
+                    console.log("클라우드에 저장된 데이터가 없습니다.");
+                    await saveToFirebase(); // 초기 데이터 저장
+                }
+            } catch (error) {
+                console.error("Firebase 로드 오류:", error);
+                alert("클라우드 데이터 로드 중 오류가 발생했습니다.");
+            }
+        }
+
+        // 통합 저장 함수
+        async function saveData() {
+            if (isFirebaseEnabled) {
+                await saveToFirebase();
+            } else {
+                saveToLocalStorage();
+            }
+        }
+
+        // 통합 로드 함수
+        async function loadData() {
+            if (isFirebaseEnabled) {
+                await loadFromFirebase();
+            } else {
+                loadFromLocalStorage();
+            }
+        }
+
+        // 이미지 저장 관련 함수들
+        async function saveCurrentMonthAsImage() {
+            try {
+                // 현재 화면을 캡처할 임시 엘리먼트 생성
+                const reportElement = await createMonthlyReport();
+                
+                // html2canvas로 이미지 생성
+                const canvas = await html2canvas(reportElement, {
+                    backgroundColor: '#ffffff',
+                    scale: 2, // 고해상도
+                    useCORS: true,
+                    logging: false
+                });
+                
+                // 캔버스를 이미지로 변환하여 다운로드
+                const link = document.createElement('a');
+                link.download = `경건한생활_${spiritualData.currentYear}년${spiritualData.currentMonth}월_기록.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // 임시 엘리먼트 제거
+                document.body.removeChild(reportElement);
+                
+                alert('📸 이미지가 성공적으로 저장되었습니다!');
+                
+            } catch (error) {
+                console.error('이미지 저장 오류:', error);
+                alert('이미지 저장 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function createMonthlyReport() {
+            // 현재 데이터를 기반으로 보고서 HTML 생성
+            const reportContainer = document.createElement('div');
+            reportContainer.style.cssText = `
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                width: 800px;
+                background: white;
+                padding: 40px;
+                font-family: Arial, sans-serif;
+                box-sizing: border-box;
+            `;
+            
+            const currentDate = new Date().toLocaleDateString('ko-KR');
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', 
+                              '7월', '8월', '9월', '10월', '11월', '12월'];
+            
+            reportContainer.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4facfe; padding-bottom: 20px;">
+                    <h1 style="color: #4facfe; margin: 0; font-size: 2.2em;">🙏 경건한 생활 기록</h1>
+                    <h2 style="color: #666; margin: 10px 0 0 0;">${spiritualData.currentYear}년 ${monthNames[spiritualData.currentMonth - 1]}</h2>
+                    <p style="color: #999; margin: 5px 0 0 0;">생성일: ${currentDate}</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px;">📊 이번 달 영적 활동 통계</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                        ${spiritualData.items.map(item => `
+                            <div style="padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.4em; font-weight: 600; color: #333;">${item.name}</div>
+                                <div style="font-size: 2em; font-weight: 700; color: #4facfe; margin-top: 5px;">${item.count}회</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <strong style="font-size: 1.2em; color: #333;">총 활동 횟수: ${spiritualData.items.reduce((sum, item) => sum + item.count, 0)}회</strong>
+                    </div>
+                </div>
+                
+                ${await generateDetailedRecords()}
+            `;
+            
+            document.body.appendChild(reportContainer);
+            return reportContainer;
+        }
+
+        async function generateDetailedRecords() {
+            let detailsHTML = '';
+            
+            // 성경읽기 기록
+            const bibleReadings = spiritualData.history.filter(h => h.isBibleReading);
+            if (bibleReadings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #4facfe; margin-bottom: 15px;">📖 성경읽기 기록 (${bibleReadings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${bibleReadings.map(reading => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #4facfe;">
+                                    <strong>${reading.bibleText}</strong>
+                                    <br><small style="color: #666;">${reading.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 설교준비 기록
+            const sermonPreparations = spiritualData.history.filter(h => h.isSermonPreparation);
+            if (sermonPreparations.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #6f42c1; margin-bottom: 15px;">📝 설교준비 기록 (${sermonPreparations.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${sermonPreparations.map(sermon => `
+                                <div style="margin-bottom: 12px; padding: 12px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #6f42c1;">
+                                    <div style="margin-bottom: 5px;"><strong>주제:</strong> ${sermon.sermonTheme}</div>
+                                    <div style="margin-bottom: 5px;"><strong>본문:</strong> ${sermon.sermonText}</div>
+                                    <div style="margin-bottom: 5px;"><strong>대상:</strong> ${sermon.sermonTarget}</div>
+                                    <small style="color: #666;">${sermon.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 심방 기록
+            const visitations = spiritualData.history.filter(h => h.isVisitation);
+            if (visitations.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #28a745; margin-bottom: 15px;">🏠 심방 기록 (${visitations.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${visitations.map(visit => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #28a745;">
+                                    <strong>${visit.targetName}</strong> - ${visit.visitPurpose}
+                                    <br><small style="color: #666;">${visit.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 상담 기록
+            const counselings = spiritualData.history.filter(h => h.isCounseling);
+            if (counselings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #fd7e14; margin-bottom: 15px;">💬 상담 기록 (${counselings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${counselings.map(counsel => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #fd7e14;">
+                                    <strong>${counsel.counseleeName}</strong> - ${counsel.counselingTopic}
+                                    <br><small style="color: #666;">${counsel.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 전도집회 기록
+            const evangelismMeetings = spiritualData.history.filter(h => h.isEvangelismMeeting);
+            if (evangelismMeetings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #dc3545; margin-bottom: 15px;">📢 전도집회 기록 (${evangelismMeetings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${evangelismMeetings.map(meeting => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #dc3545;">
+                                    <strong>${meeting.meetingPeriod}</strong> - ${meeting.meetingTarget}
+                                    <br><small style="color: #666;">${meeting.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return detailsHTML || '<p style="text-align: center; color: #666; font-style: italic;">이번 달 상세 기록이 없습니다.</p>';
+        }
+
+        // 월별 보관함 삭제 기능
+        async function deleteMonthlyArchive(index) {
+            if (confirm('이 월별 기록을 정말 삭제하시겠습니까? 삭제된 데이터는 복구할 수 없습니다.')) {
+                spiritualData.monthlyArchive.splice(index, 1);
+                
+                // 데이터 저장
+                await saveData();
+                
+                renderArchive();
+                alert('월별 기록이 삭제되었습니다.');
+            }
+        }
+
+        // 보관된 월별 데이터를 이미지로 저장
+        async function saveArchivedMonthAsImage(index) {
+            try {
+                const archiveData = spiritualData.monthlyArchive[index];
+                const reportElement = await createArchivedMonthReport(archiveData);
+                
+                const canvas = await html2canvas(reportElement, {
+                    backgroundColor: '#ffffff',
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+                
+                const link = document.createElement('a');
+                link.download = `경건한생활_${archiveData.year}년${archiveData.month}월_기록.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                document.body.removeChild(reportElement);
+                alert('📸 이미지가 성공적으로 저장되었습니다!');
+                
+            } catch (error) {
+                console.error('이미지 저장 오류:', error);
+                alert('이미지 저장 중 오류가 발생했습니다.');
+            }
+        }
+
+        async function createArchivedMonthReport(archiveData) {
+            const reportContainer = document.createElement('div');
+            reportContainer.style.cssText = `
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+                width: 800px;
+                background: white;
+                padding: 40px;
+                font-family: Arial, sans-serif;
+                box-sizing: border-box;
+            `;
+            
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', 
+                              '7월', '8월', '9월', '10월', '11월', '12월'];
+            
+            reportContainer.innerHTML = `
+                <div style="text-align: center; margin-bottom: 30px; border-bottom: 3px solid #4facfe; padding-bottom: 20px;">
+                    <h1 style="color: #4facfe; margin: 0; font-size: 2.2em;">🙏 경건한 생활 기록</h1>
+                    <h2 style="color: #666; margin: 10px 0 0 0;">${archiveData.year}년 ${monthNames[archiveData.month - 1]}</h2>
+                    <p style="color: #999; margin: 5px 0 0 0;">보관일: ${archiveData.savedDate}</p>
+                </div>
+                
+                <div style="margin-bottom: 30px;">
+                    <h3 style="color: #333; border-bottom: 2px solid #ddd; padding-bottom: 10px;">📊 영적 활동 통계</h3>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+                        ${archiveData.items.map(item => `
+                            <div style="padding: 15px; border: 2px solid #e9ecef; border-radius: 8px; text-align: center;">
+                                <div style="font-size: 1.4em; font-weight: 600; color: #333;">${item.name}</div>
+                                <div style="font-size: 2em; font-weight: 700; color: #4facfe; margin-top: 5px;">${item.count}회</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div style="text-align: center; margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <strong style="font-size: 1.2em; color: #333;">총 활동 횟수: ${archiveData.totalActivities}회</strong>
+                    </div>
+                </div>
+                
+                ${generateArchivedDetailedRecords(archiveData)}
+            `;
+            
+            document.body.appendChild(reportContainer);
+            return reportContainer;
+        }
+
+        function generateArchivedDetailedRecords(archiveData) {
+            let detailsHTML = '';
+            
+            // 성경읽기 기록
+            if (archiveData.bibleReadings && archiveData.bibleReadings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #4facfe; margin-bottom: 15px;">📖 성경읽기 기록 (${archiveData.bibleReadings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${archiveData.bibleReadings.map(reading => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #4facfe;">
+                                    <strong>${reading.bibleText}</strong>
+                                    <br><small style="color: #666;">${reading.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 설교준비 기록
+            if (archiveData.sermonPreparations && archiveData.sermonPreparations.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #6f42c1; margin-bottom: 15px;">📝 설교준비 기록 (${archiveData.sermonPreparations.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${archiveData.sermonPreparations.map(sermon => `
+                                <div style="margin-bottom: 12px; padding: 12px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #6f42c1;">
+                                    <div style="margin-bottom: 5px;"><strong>주제:</strong> ${sermon.sermonTheme}</div>
+                                    <div style="margin-bottom: 5px;"><strong>본문:</strong> ${sermon.sermonText}</div>
+                                    <div style="margin-bottom: 5px;"><strong>대상:</strong> ${sermon.sermonTarget}</div>
+                                    <small style="color: #666;">${sermon.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // 심방, 상담, 전도집회 기록도 동일하게 추가...
+            if (archiveData.visitations && archiveData.visitations.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #28a745; margin-bottom: 15px;">🏠 심방 기록 (${archiveData.visitations.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${archiveData.visitations.map(visit => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #28a745;">
+                                    <strong>${visit.targetName}</strong> - ${visit.visitPurpose}
+                                    <br><small style="color: #666;">${visit.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (archiveData.counselings && archiveData.counselings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #fd7e14; margin-bottom: 15px;">💬 상담 기록 (${archiveData.counselings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${archiveData.counselings.map(counsel => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #fd7e14;">
+                                    <strong>${counsel.counseleeName}</strong> - ${counsel.counselingTopic}
+                                    <br><small style="color: #666;">${counsel.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            if (archiveData.evangelismMeetings && archiveData.evangelismMeetings.length > 0) {
+                detailsHTML += `
+                    <div style="margin-bottom: 25px;">
+                        <h4 style="color: #dc3545; margin-bottom: 15px;">📢 전도집회 기록 (${archiveData.evangelismMeetings.length}회)</h4>
+                        <div style="max-height: 300px; overflow-y: auto;">
+                            ${archiveData.evangelismMeetings.map(meeting => `
+                                <div style="margin-bottom: 8px; padding: 10px; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #dc3545;">
+                                    <strong>${meeting.meetingPeriod}</strong> - ${meeting.meetingTarget}
+                                    <br><small style="color: #666;">${meeting.timestamp}</small>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return detailsHTML || '<p style="text-align: center; color: #666; font-style: italic;">상세 기록이 없습니다.</p>';
+        }
+
+        // 페이지 로드 시 초기화
+        window.onload = async function() {
+            // 로딩 표시
+            document.getElementById('currentMonth').textContent = '데이터 로드 중...';
+            
+            // 데이터 로드
+            await loadData();
+            
+            // UI 업데이트
+            updateCurrentMonth();
+            renderItems();
+            renderHistory();
+            renderArchive();
+            
+            // 연결 상태 표시
+            const statusColor = isFirebaseEnabled ? '#28a745' : '#ffc107';
+            const statusText = isFirebaseEnabled ? '클라우드 동기화 활성화' : '로컬 저장소 사용';
+            document.getElementById('currentMonth').innerHTML += `<br><small style="color: ${statusColor};">📡 ${statusText}</small>`;
+        };
+
+        // 현재 월 표시 업데이트
+        function updateCurrentMonth() {
+            const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', 
+                              '7월', '8월', '9월', '10월', '11월', '12월'];
+            document.getElementById('currentMonth').textContent = 
+                `${spiritualData.currentYear}년 ${monthNames[spiritualData.currentMonth - 1]}`;
+        }
+
+        // 새 항목 추가
+        async function addItem() {
+            const input = document.getElementById('newItemInput');
+            const itemName = input.value.trim();
+            
+            if (itemName === '') {
+                alert('활동 이름을 입력해주세요.');
+                return;
+            }
+
+            // 중복 체크
+            if (spiritualData.items.some(item => item.name.toLowerCase() === itemName.toLowerCase())) {
+                alert('이미 존재하는 활동입니다.');
+                return;
+            }
+
+            // 새 항목 추가
+            spiritualData.items.push({
+                id: spiritualData.nextId++,
+                name: itemName,
+                count: 0
+            });
+
+            input.value = '';
+            
+            // 데이터 저장
+            await saveData();
+            
+            renderItems();
+        }
+
+        // 항목 목록 렌더링
+        function renderItems() {
+            const container = document.getElementById('itemsList');
+            
+            if (spiritualData.items.length === 0) {
+                container.innerHTML = '<div class="empty-message">아직 등록된 활동이 없습니다. 위에서 새로운 활동을 추가해보세요.</div>';
+                return;
+            }
+
+            container.innerHTML = spiritualData.items.map(item => `
+                <div class="item-card">
+                    <div class="item-header">
+                        <div class="item-name">${item.name}</div>
+                        <div class="item-count">${item.count}</div>
+                        <div class="item-controls">
+                            <button class="btn btn-success" onclick="incrementCount(${item.id})">+1</button>
+                            <button class="btn btn-danger" onclick="removeItem(${item.id})" title="항목 삭제">🗑️</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 카운트 증가
+        async function incrementCount(itemId) {
+            const item = spiritualData.items.find(i => i.id === itemId);
+            if (item) {
+                const itemName = item.name.toLowerCase();
+                
+                // 성경읽기인 경우 본문 입력받기
+                if (itemName === '성경읽기' || itemName.includes('성경')) {
+                    const bibleText = prompt('📖 오늘 읽으신 성경 본문을 입력해주세요:\n(예: 창세기 1:1-10, 시편 23편, 마태복음 5장 등)', '');
+                    
+                    if (bibleText === null) return; // 취소한 경우
+                    
+                    if (bibleText.trim() === '') {
+                        alert('성경 본문을 입력해주세요.');
+                        return;
+                    }
+                    
+                    item.count++;
+                    
+                    // 성경읽기 히스토리에 본문 포함하여 기록
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        bibleText: bibleText.trim(),
+                        isBibleReading: true
+                    });
+                } 
+                // 설교준비인 경우 본문, 대상, 주제 입력받기
+                else if (itemName.includes('설교')) {
+                    const sermonText = prompt('📖 설교 본문을 입력해주세요:\n(예: 요한복음 3:16, 시편 23편, 로마서 8:28-30 등)', '');
+                    
+                    if (sermonText === null) return; // 취소한 경우
+                    
+                    if (sermonText.trim() === '') {
+                        alert('설교 본문을 입력해주세요.');
+                        return;
+                    }
+                    
+                    const sermonTarget = prompt('👥 설교 대상을 입력해주세요:\n(예: 주일예배, 수요예배, 새벽기도회, 청년부, 구역예배 등)', '');
+                    
+                    if (sermonTarget === null) return; // 취소한 경우
+                    
+                    if (sermonTarget.trim() === '') {
+                        alert('설교 대상을 입력해주세요.');
+                        return;
+                    }
+                    
+                    const sermonTheme = prompt('💡 설교 주제(제목)를 입력해주세요:\n(예: 하나님의 사랑, 믿음의 능력, 소망의 삶 등)', '');
+                    
+                    if (sermonTheme === null) return; // 취소한 경우
+                    
+                    if (sermonTheme.trim() === '') {
+                        alert('설교 주제를 입력해주세요.');
+                        return;
+                    }
+                    
+                    item.count++;
+                    
+                    // 설교준비 히스토리에 상세 정보 포함하여 기록
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        sermonText: sermonText.trim(),
+                        sermonTarget: sermonTarget.trim(),
+                        sermonTheme: sermonTheme.trim(),
+                        isSermonPreparation: true
+                    });
+                } 
+                // 심방인 경우 대상자 이름과 목적 입력받기
+                else if (itemName.includes('심방')) {
+                    const targetName = prompt('👥 심방 대상자의 이름을 입력해주세요:\n(예: 김집사, 이권사, 박성도 등)', '');
+                    
+                    if (targetName === null) return; // 취소한 경우
+                    
+                    if (targetName.trim() === '') {
+                        alert('대상자 이름을 입력해주세요.');
+                        return;
+                    }
+                    
+                    const visitPurpose = prompt('🎯 심방 목적을 간단히 입력해주세요:\n(예: 병문안, 생일축하, 위로, 새가족 심방, 정기심방 등)', '');
+                    
+                    if (visitPurpose === null) return; // 취소한 경우
+                    
+                    if (visitPurpose.trim() === '') {
+                        alert('심방 목적을 입력해주세요.');
+                        return;
+                    }
+                    
+                    item.count++;
+                    
+                    // 심방 히스토리에 대상자 이름과 목적 포함하여 기록
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        targetName: targetName.trim(),
+                        visitPurpose: visitPurpose.trim(),
+                        isVisitation: true
+                    });
+                }
+                // 상담인 경우 대상자 이름과 상담 주제 입력받기
+                else if (itemName.includes('상담')) {
+                    const counseleeName = prompt('👥 상담 대상자의 이름을 입력해주세요:\n(예: 김청년, 이성도, 박집사 등)', '');
+                    
+                    if (counseleeName === null) return; // 취소한 경우
+                    
+                    if (counseleeName.trim() === '') {
+                        alert('상담 대상자 이름을 입력해주세요.');
+                        return;
+                    }
+                    
+                    const counselingTopic = prompt('💬 상담 주제를 입력해주세요:\n(예: 진로고민, 가정문제, 신앙문제, 인간관계, 건강문제 등)', '');
+                    
+                    if (counselingTopic === null) return; // 취소한 경우
+                    
+                    if (counselingTopic.trim() === '') {
+                        alert('상담 주제를 입력해주세요.');
+                        return;
+                    }
+                    
+                    item.count++;
+                    
+                    // 상담 히스토리에 대상자 이름과 주제 포함하여 기록
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        counseleeName: counseleeName.trim(),
+                        counselingTopic: counselingTopic.trim(),
+                        isCounseling: true
+                    });
+                }
+                // 전도집회인 경우 기간과 대상 입력받기
+                else if (itemName.includes('전도집회') || itemName.includes('집회')) {
+                    const meetingPeriod = prompt('📅 전도집회 기간을 입력해주세요:\n(예: 3일간, 1주일, 5.1-5.3, 3박4일 등)', '');
+                    
+                    if (meetingPeriod === null) return; // 취소한 경우
+                    
+                    if (meetingPeriod.trim() === '') {
+                        alert('전도집회 기간을 입력해주세요.');
+                        return;
+                    }
+                    
+                    const meetingTarget = prompt('👥 전도집회 대상을 입력해주세요:\n(예: 지역주민, 청년부, 새가족, 온 교회, 여성부 등)', '');
+                    
+                    if (meetingTarget === null) return; // 취소한 경우
+                    
+                    if (meetingTarget.trim() === '') {
+                        alert('전도집회 대상을 입력해주세요.');
+                        return;
+                    }
+                    
+                    item.count++;
+                    
+                    // 전도집회 히스토리에 기간과 대상 포함하여 기록
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        meetingPeriod: meetingPeriod.trim(),
+                        meetingTarget: meetingTarget.trim(),
+                        isEvangelismMeeting: true
+                    });
+                }
+                else {
+                    // 일반 활동
+                    item.count++;
+                    
+                    // 히스토리에 기록 추가
+                    const now = new Date();
+                    spiritualData.history.unshift({
+                        itemName: item.name,
+                        timestamp: now.toLocaleString('ko-KR'),
+                        date: now.toLocaleDateString('ko-KR'),
+                        isBibleReading: false,
+                        isSermonPreparation: false,
+                        isVisitation: false,
+                        isCounseling: false,
+                        isEvangelismMeeting: false
+                    });
+                }
+
+                // 데이터 저장
+                await saveData();
+                
+                renderItems();
+                renderHistory();
+            }
+        }
+
+        // 항목 삭제
+        async function removeItem(itemId) {
+            if (confirm('이 활동을 정말 삭제하시겠습니까?')) {
+                spiritualData.items = spiritualData.items.filter(i => i.id !== itemId);
+                
+                // 데이터 저장
+                await saveData();
+                
+                renderItems();
+            }
+        }
+
+        // 히스토리 렌더링
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            
+            if (spiritualData.history.length === 0) {
+                container.innerHTML = '<div class="empty-message">아직 기록된 활동이 없습니다.</div>';
+                return;
+            }
+
+            // 오늘 날짜의 기록만 표시
+            const today = new Date().toLocaleDateString('ko-KR');
+            const todayHistory = spiritualData.history.filter(h => h.date === today);
+
+            if (todayHistory.length === 0) {
+                container.innerHTML = '<div class="empty-message">오늘 기록된 활동이 없습니다.</div>';
+                return;
+            }
+
+            container.innerHTML = todayHistory.map(record => {
+                if (record.isBibleReading) {
+                    return `
+                        <div class="history-item">
+                            <div>
+                                <strong style="color: #4facfe;">📖 ${record.itemName}</strong>
+                                <div style="margin-top: 5px; font-size: 0.9em; color: #666; font-style: italic;">
+                                    ${record.bibleText}
+                                </div>
+                            </div>
+                            <span style="color: #999; font-size: 0.9em;">${record.timestamp}</span>
+                        </div>
+                    `;
+                } else if (record.isSermonPreparation) {
+                    return `
+                        <div class="history-item">
+                            <div>
+                                <strong style="color: #6f42c1;">📝 ${record.itemName}</strong>
+                                <div style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                                    <div><strong>본문:</strong> ${record.sermonText}</div>
+                                    <div><strong>대상:</strong> ${record.sermonTarget}</div>
+                                    <div><strong>주제:</strong> ${record.sermonTheme}</div>
+                                </div>
+                            </div>
+                            <span style="color: #999; font-size: 0.9em;">${record.timestamp}</span>
+                        </div>
+                    `;
+                } else if (record.isVisitation) {
+                    return `
+                        <div class="history-item">
+                            <div>
+                                <strong style="color: #28a745;">🏠 ${record.itemName}</strong>
+                                <div style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                                    <div><strong>대상:</strong> ${record.targetName}</div>
+                                    <div><strong>목적:</strong> ${record.visitPurpose}</div>
+                                </div>
+                            </div>
+                            <span style="color: #999; font-size: 0.9em;">${record.timestamp}</span>
+                        </div>
+                    `;
+                } else if (record.isCounseling) {
+                    return `
+                        <div class="history-item">
+                            <div>
+                                <strong style="color: #fd7e14;">💬 ${record.itemName}</strong>
+                                <div style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                                    <div><strong>대상:</strong> ${record.counseleeName}</div>
+                                    <div><strong>주제:</strong> ${record.counselingTopic}</div>
+                                </div>
+                            </div>
+                            <span style="color: #999; font-size: 0.9em;">${record.timestamp}</span>
+                        </div>
+                    `;
+                } else if (record.isEvangelismMeeting) {
+                    return `
+                        <div class="history-item">
+                            <div>
+                                <strong style="color: #dc3545;">📢 ${record.itemName}</strong>
+                                <div style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                                    <div><strong>기간:</strong> ${record.meetingPeriod}</div>
+                                    <div><strong>대상:</strong> ${record.meetingTarget}</div>
+                                </div>
+                            </div>
+                            <span style="color: #999; font-size: 0.9em;">${record.timestamp}</span>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="history-item">
+                            <span><strong>${record.itemName}</strong></span>
+                            <span>${record.timestamp}</span>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        // 새로운 달 시작
+        async function resetMonth() {
+            if (spiritualData.items.some(item => item.count > 0)) {
+                if (!confirm('현재 달의 기록을 보관하고 새로운 달을 시작하시겠습니까?')) {
+                    return;
+                }
+
+                // 이미지 저장 옵션 제공
+                const saveAsImage = confirm('새로운 달을 시작하기 전에 현재 달의 기록을 이미지로 저장하시겠습니까?\n(나중에 이전 달 기록 보관함에서도 이미지 저장 가능)');
+                
+                if (saveAsImage) {
+                    try {
+                        await saveCurrentMonthAsImage();
+                    } catch (error) {
+                        console.error('이미지 저장 오류:', error);
+                        alert('이미지 저장 중 오류가 발생했습니다. 계속 진행하시겠습니까?');
+                    }
+                }
+
+                // 현재 달의 각 활동별 기록 수집
+                const currentMonthBibleReadings = spiritualData.history.filter(h => h.isBibleReading);
+                const currentMonthSermonPreparations = spiritualData.history.filter(h => h.isSermonPreparation);
+                const currentMonthVisitations = spiritualData.history.filter(h => h.isVisitation);
+                const currentMonthCounselings = spiritualData.history.filter(h => h.isCounseling);
+                const currentMonthEvangelismMeetings = spiritualData.history.filter(h => h.isEvangelismMeeting);
+
+                // 현재 달 데이터를 보관함에 저장
+                const monthData = {
+                    year: spiritualData.currentYear,
+                    month: spiritualData.currentMonth,
+                    items: spiritualData.items.map(item => ({
+                        name: item.name,
+                        count: item.count
+                    })),
+                    bibleReadings: currentMonthBibleReadings.map(reading => ({
+                        bibleText: reading.bibleText,
+                        timestamp: reading.timestamp,
+                        date: reading.date
+                    })),
+                    sermonPreparations: currentMonthSermonPreparations.map(sermon => ({
+                        sermonText: sermon.sermonText,
+                        sermonTarget: sermon.sermonTarget,
+                        sermonTheme: sermon.sermonTheme,
+                        timestamp: sermon.timestamp,
+                        date: sermon.date
+                    })),
+                    visitations: currentMonthVisitations.map(visit => ({
+                        targetName: visit.targetName,
+                        visitPurpose: visit.visitPurpose,
+                        timestamp: visit.timestamp,
+                        date: visit.date
+                    })),
+                    counselings: currentMonthCounselings.map(counsel => ({
+                        counseleeName: counsel.counseleeName,
+                        counselingTopic: counsel.counselingTopic,
+                        timestamp: counsel.timestamp,
+                        date: counsel.date
+                    })),
+                    evangelismMeetings: currentMonthEvangelismMeetings.map(meeting => ({
+                        meetingPeriod: meeting.meetingPeriod,
+                        meetingTarget: meeting.meetingTarget,
+                        timestamp: meeting.timestamp,
+                        date: meeting.date
+                    })),
+                    totalActivities: spiritualData.items.reduce((sum, item) => sum + item.count, 0),
+                    savedDate: new Date().toLocaleString('ko-KR')
+                };
+
+                spiritualData.monthlyArchive.unshift(monthData);
+            }
+
+            // 새 달 설정
+            const now = new Date();
+            spiritualData.currentMonth = now.getMonth() + 1;
+            spiritualData.currentYear = now.getFullYear();
+
+            // 모든 카운트 리셋
+            spiritualData.items.forEach(item => item.count = 0);
+            
+            // 히스토리 초기화
+            spiritualData.history = [];
+
+            // 데이터 저장
+            await saveData();
+
+            updateCurrentMonth();
+            renderItems();
+            renderHistory();
+            renderArchive();
+
+            alert('새로운 달이 시작되었습니다! 영적 생활을 더욱 풍성하게 채워가세요. 🙏');
+        }
+
+        // 월별 보관함 렌더링
+        function renderArchive() {
+            const container = document.getElementById('monthlyArchive');
+            const listContainer = document.getElementById('archiveList');
+            
+            if (spiritualData.monthlyArchive.length === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'block';
+            
+            listContainer.innerHTML = spiritualData.monthlyArchive.map((archive, index) => {
+                let bibleReadingSection = '';
+                if (archive.bibleReadings && archive.bibleReadings.length > 0) {
+                    bibleReadingSection = `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 style="color: #4facfe; margin-bottom: 10px;">📖 성경읽기 기록 (${archive.bibleReadings.length}회)</h5>
+                            <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                ${archive.bibleReadings.map(reading => `
+                                    <div style="margin-bottom: 8px; padding: 5px; background: white; border-radius: 3px; font-size: 0.9em;">
+                                        <strong>${reading.bibleText}</strong>
+                                        <br><small style="color: #666;">${reading.timestamp}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let sermonPreparationSection = '';
+                if (archive.sermonPreparations && archive.sermonPreparations.length > 0) {
+                    sermonPreparationSection = `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 style="color: #6f42c1; margin-bottom: 10px;">📝 설교준비 기록 (${archive.sermonPreparations.length}회)</h5>
+                            <div style="max-height: 250px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                ${archive.sermonPreparations.map(sermon => `
+                                    <div style="margin-bottom: 12px; padding: 8px; background: white; border-radius: 3px; font-size: 0.9em; border-left: 3px solid #6f42c1;">
+                                        <div style="margin-bottom: 5px;"><strong>주제:</strong> ${sermon.sermonTheme}</div>
+                                        <div style="margin-bottom: 5px;"><strong>본문:</strong> ${sermon.sermonText}</div>
+                                        <div style="margin-bottom: 5px;"><strong>대상:</strong> ${sermon.sermonTarget}</div>
+                                        <small style="color: #666;">${sermon.timestamp}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let visitationSection = '';
+                if (archive.visitations && archive.visitations.length > 0) {
+                    visitationSection = `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 style="color: #28a745; margin-bottom: 10px;">🏠 심방 기록 (${archive.visitations.length}회)</h5>
+                            <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                ${archive.visitations.map(visit => `
+                                    <div style="margin-bottom: 8px; padding: 5px; background: white; border-radius: 3px; font-size: 0.9em;">
+                                        <strong>${visit.targetName}</strong> - ${visit.visitPurpose}
+                                        <br><small style="color: #666;">${visit.timestamp}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let counselingSection = '';
+                if (archive.counselings && archive.counselings.length > 0) {
+                    counselingSection = `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 style="color: #fd7e14; margin-bottom: 10px;">💬 상담 기록 (${archive.counselings.length}회)</h5>
+                            <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                ${archive.counselings.map(counsel => `
+                                    <div style="margin-bottom: 8px; padding: 5px; background: white; border-radius: 3px; font-size: 0.9em;">
+                                        <strong>${counsel.counseleeName}</strong> - ${counsel.counselingTopic}
+                                        <br><small style="color: #666;">${counsel.timestamp}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                let evangelismMeetingSection = '';
+                if (archive.evangelismMeetings && archive.evangelismMeetings.length > 0) {
+                    evangelismMeetingSection = `
+                        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+                            <h5 style="color: #dc3545; margin-bottom: 10px;">📢 전도집회 기록 (${archive.evangelismMeetings.length}회)</h5>
+                            <div style="max-height: 200px; overflow-y: auto; background: #f8f9fa; padding: 10px; border-radius: 5px;">
+                                ${archive.evangelismMeetings.map(meeting => `
+                                    <div style="margin-bottom: 8px; padding: 5px; background: white; border-radius: 3px; font-size: 0.9em;">
+                                        <strong>${meeting.meetingPeriod}</strong> - ${meeting.meetingTarget}
+                                        <br><small style="color: #666;">${meeting.timestamp}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="archive-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h4 style="margin: 0;">${archive.year}년 ${archive.month}월 기록</h4>
+                            <div style="display: flex; gap: 10px;">
+                                <button class="btn btn-primary" onclick="saveArchivedMonthAsImage(${index})" style="font-size: 0.9em; padding: 8px 12px;">📸 이미지 저장</button>
+                                <button class="btn btn-danger" onclick="deleteMonthlyArchive(${index})" style="font-size: 0.9em; padding: 8px 12px;">🗑️ 삭제</button>
+                            </div>
+                        </div>
+                        <p><strong>총 활동 횟수:</strong> ${archive.totalActivities}회</p>
+                        <div style="margin-top: 10px;">
+                            ${archive.items.map(item => `
+                                <span style="display: inline-block; margin-right: 15px; margin-bottom: 5px;">
+                                    <strong>${item.name}:</strong> ${item.count}회
+                                </span>
+                            `).join('')}
+                        </div>
+                        ${bibleReadingSection}
+                        ${sermonPreparationSection}
+                        ${visitationSection}
+                        ${counselingSection}
+                        ${evangelismMeetingSection}
+                        <small style="color: #666;">보관일: ${archive.savedDate}</small>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Enter 키로 항목 추가
+        document.getElementById('newItemInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addItem();
+            }
+        });
+    </script>
+</body>
+</html>
